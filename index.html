@@ -1,0 +1,1069 @@
+ <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List com Prioridades</title>
+<style>
+  :root {
+    --grad1: #f72585; --grad2: #b5179e; --grad3: #7209b7;
+    --grad4: #560BAD; --grad5: #480ca8; --grad6: #3f37c9;
+    --grad7: #4895ef; --grad8: #4cc9f0;
+    --card-bg: rgba(58, 12, 163, 0.8);
+    --text: #000000;
+    --border: #b5179e;
+    --input-bg: rgba(63, 55, 201, 0.7);
+    --btn1: var(--grad1);
+    --btn2: var(--grad2);
+    --progress1: var(--grad7);
+    --progress2: var(--grad8);
+  }
+
+  body.light {
+    --grad1: #007f5f; --grad2: #2b9348; --grad3: #55a630;
+    --grad4: #80b918; --grad5: #aacc00; --grad6: #bfd200;
+    --grad7: #d4d700; --grad8: #a1a172;
+    --card-bg: rgba(75, 120, 40, 0.8);
+    --text: #000000;
+    --border: #5a6e1b;
+    --input-bg: rgba(186, 216, 90, 0.6);
+    --btn1: var(--grad3);
+    --btn2: var(--grad5);
+    --progress1: var(--grad7);
+    --progress2: var(--grad8);
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--text);
+    background: linear-gradient(45deg, var(--grad1), var(--grad2), var(--grad3), var(--grad4), var(--grad5), var(--grad6), var(--grad7), var(--grad8));
+    background-size: 400% 400%;
+    animation: gradient 12s ease infinite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    transition: all 0.6s ease;
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  margin-bottom: 0!important;/* tira o espaço embaixo do título */
+}
+
+.todo-container {
+  margin-top: 0!important; /* encosta o card no título */
+}
+
+
+#themeToggle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--text);
+  background: var(--grad7);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* quando o usuário passar o mouse */
+#themeToggle:hover {
+  transform: scale(1.1);
+}
+ 
+ 
+
+
+  h1 {
+    color: var(--text);
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+  }
+
+  .todo-container {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    width: 90%;
+    max-width: 440px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    margin-top: 20px;
+    border: 2px solid var(--border);
+    transition: all 0.4s ease;
+    color: black;
+  }
+
+  .counter {
+    text-align: center;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+
+  .progress-bar-container {
+    width: 100%;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+
+  .progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--progress1), var(--progress2));
+  width: 0%;
+  border-radius: 10px;
+  transition: width 0.8s ease;
+  box-shadow:
+    0 0 8px var(--progress1),
+    0 0 16px var(--progress2),
+    0 0 24px var(--progress2),
+    0 0 40px var(--progress1);
+  animation: neonProgress 3s ease-in-out infinite alternate;
+}
+
+/* ✨ animação suave do brilho da barra */
+@keyframes neonProgress {
+  0% {
+    box-shadow:
+      0 0 6px var(--progress1),
+      0 0 14px var(--progress2),
+      0 0 24px var(--progress2);
+  }
+  100% {
+    box-shadow:
+      0 0 12px var(--progress2),
+      0 0 24px var(--progress1),
+      0 0 36px var(--progress2);
+  }
+}
+
+
+  .input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  input[type="text"], input[type="date"], select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid var(--grad3);
+    outline: none;
+    font-size: 16px;
+    background-color: var(--input-bg);
+    color: black;
+    
+  }
+
+  button {
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--btn1), var(--btn2));
+    color: #000000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+ #addBtn {
+  font-size: 18px;              /* 🔹 texto maior */
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: none;         /* 🔹 mantém "Adicionar" normal */
+  padding: 10px 10px;            /* 🔹 menos espaço interno → botão não cresce */
+  border-radius: 8px;
+  min-width: 140px;
+  background: linear-gradient(90deg, var(--btn1), var(--btn2));
+  color: #000;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 4px rgba(255,255,255,0.15);
+  cursor: pointer;
+}
+
+ 
+
+
+
+
+  .botao-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.botao {
+  flex: 1;
+  max-width: 220px; /* mantém uma largura bonita e responsiva */
+}
+
+  .botao {
+    padding: 12px 24px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--btn1), var(--btn2));
+    color: #000000;
+    cursor: pointer;
+    min-width: 150px;
+    text-align: center;
+    transition: 0.3s;
+  }
+
+  button:hover, .botao:hover {
+    opacity: 0.9;
+    transform: scale(1.03);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--border);
+    transition: all 0.4s;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 0.4s forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- Aqui está o novo estilo atualizado --- */
+  .completed {
+    background: rgba(0, 0, 0, 0.25);
+    border-color: var(--grad5);
+    transition: background 0.3s, border 0.3s;
+  }
+
+  body.light .completed {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: var(--grad3);
+  }
+
+  .completed span {
+    text-decoration: line-through;
+    color: var(--text);
+    opacity: 0.6;
+  }
+  /* --- fim do bloco --- */
+
+  .priority.baixa { background-color: #00c3ff; color: rgb(0, 0, 0); }
+  .priority.media { background-color: #ffc80d; color: rgb(0, 0, 0); }
+  .priority.alta  { background-color: #d00000; color: rgb(0, 0, 0); }
+
+  .priority {
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 5px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+  }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  /* Estilo do checkbox padrão */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--grad5);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+
+/* Cor do checkbox marcado (modo escuro) */
+input[type="checkbox"]:checked {
+  background: linear-gradient(90deg, var(--btn1), var(--btn2));
+  border-color: var(--btn2);
+}
+
+/* Cor do checkbox no tema claro (verde) */
+body.light input[type="checkbox"] {
+  border-color: var(--grad3);
+}
+
+body.light input[type="checkbox"]:checked {
+  background: linear-gradient(90deg, var(--btn1), var(--btn2));
+  border-color: var(--btn2);
+}
+
+/* Ícone de check customizado */
+input[type="checkbox"]:checked::after {
+  content: "✔";
+  color: black;
+  position: absolute;
+  top: 0;
+  left: 4px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.priority {
+  display: under;
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  width: fit-content;
+  min-width: 90px; 
+  text-align: center;
+  white-space: nowrap;
+  
+}
+.titulo-todo {
+  color: #000000; /* branco puro */
+  font-weight: bold;
+  text-align: center;
+  font-size: 32px;
+  text-shadow: 0 0 8px #fff, 0 0 12px #ffffff, 0 0 16px #ffffff;
+  animation: brilho 1.5s ease-in-out infinite alternate;
+}
+
+/* Animação suave de brilho branco */
+@keyframes brilho {
+  0% {
+    text-shadow: 0 0 6px #fff, 0 0 10px #ffffff, 0 0 14px #ffffff;
+  }
+  100% {
+    text-shadow: 0 0 10px #fff, 0 0 20px #ffffff, 0 0 30px #ffffff;
+  }
+}
+
+  /* --- EFEITO DE BRILHO AO REDOR DO CARD --- */
+.todo-container {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 440px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  margin-top: 20px;
+  border: 2px solid var(--border);
+  transition: all 0.4s ease;
+  color: black;
+}
+
+.todo-container::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 14px;
+  background: linear-gradient(45deg,
+    var(--grad1),
+    var(--grad3),
+    var(--grad5),
+    var(--grad7),
+    var(--grad8),
+    var(--grad1)
+  );
+  background-size: 300% 300%;
+  animation: brilhoCard 6s linear infinite;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+@keyframes brilhoCard {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 🔹 Garante que o card não diminua junto com a assinatura */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* 🔹 Mantém o card sempre com tamanho fixo e centralizado */
+.todo-container {
+  flex: 0 0 auto;
+  width: 90%;
+  max-width: 440px;
+  margin: 20px auto;
+  box-sizing: border-box;
+}
+
+/* 🔹 Faz a assinatura não afetar o tamanho do card */
+.assinatura {
+  flex: none;
+  width: 100%;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 15px;
+  color: black;
+}
+ 
+ 
+
+
+
+
+/* --- MODAL PERSONALIZADO DE CONFIRMAÇÃO --- */
+#customConfirm {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+#customConfirm .box {
+  position: relative;
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 15px 20px;          /* 🔹 reduz o tamanho interno */
+  border-radius: 10px;         /* 🔹 bordas mais suaves */
+  width: 85%;
+  max-width: 260px;            /* 🔹 bem menor */
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+  border: 1.5px solid var(--border);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+/* título menor */
+#customConfirm h2 {
+  font-size: 1rem;             /* 🔹 menor texto */
+  margin-bottom: 15px;
+  line-height: 1.3;
+}
+
+/* botões menores e mais próximos */
+#customConfirm .actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+#customConfirm button {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+
+/* Borda brilhante animada */
+#customConfirm .box::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 16px;
+  background: linear-gradient(45deg,
+    var(--grad1),
+    var(--grad3),
+    var(--grad5),
+    var(--grad7),
+    var(--grad8),
+    var(--grad1)
+  );
+  background-size: 300% 300%;
+  animation: glowBorder 6s linear infinite;
+  filter: blur(8px);
+  z-index: -1;
+}
+
+@keyframes glowBorder {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#customConfirm h2 {
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+#customConfirm .actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+#customConfirm button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--btn1), var(--btn2));
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#customConfirm button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+ 
+ 
+
+/* ===== ALERTA CENTRAL COM MESMO TEMA DO BACKGROUND ===== */
+#alertaCentral {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(90deg, var(--grad1), var(--grad2), var(--grad3));
+  color: black;
+  padding: 20px 30px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  text-align: center;
+  z-index: 9999;
+  opacity: 0;
+  animation: fadeInOut 2.5s ease forwards;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  border: 2px solid var(--border);
+  max-width: 80%;
+  line-height: 1.4;
+}
+
+/* Animação de entrada/saída suave */
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -60%); }
+  15% { opacity: 1; transform: translate(-50%, -50%); }
+  85% { opacity: 1; transform: translate(-50%, -50%); }
+  100% { opacity: 0; transform: translate(-50%, -40%); }
+}
+
+ 
+/* ===== UNIFICAÇÃO DE TAMANHO DOS CAMPOS ===== */
+input[type="date"] {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 45px;
+  font-size: 16px;
+  background-color: var(--input-bg);
+  color: black;
+  border-radius: 8px;
+  border: 2px solid var(--grad3);
+  padding: 10px;
+}
+
+/* Corrige diferenças no iOS e Android */
+@supports (-webkit-touch-callout: none) {
+  input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-align: left;
+    padding-right: 10px;
+  }
+}
+ 
+/* Ícone de calendário customizado */
+.input-area {
+  position: relative;
+}
+
+.input-area input[type="date"] {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24"><path d="M7 11h5v5H7z"/><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v16c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H5V8h14v13z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 35px;
+  cursor: pointer;
+}
+/* Remove o ícone padrão do input date (Safari, Chrome, Edge, etc.) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: none;
+}
+
+/* Remove o ícone padrão em navegadores baseados em Firefox */
+input[type="date"]::-moz-focus-inner,
+input[type="date"]::-moz-calendar-picker-indicator {
+  display: none;
+}
+
+/*   Efeito neon suave no hover (botões principais) */
+button:hover, .botao:hover {
+  transform: scale(1.02); /*   bem mais suave */
+  opacity: 1;
+  box-shadow:
+    0 0 6px var(--btn1),
+    0 0 12px var(--btn2),
+    0 0 18px var(--btn2),
+    0 0 25px var(--btn2);
+  transition: all 0.3s ease-in-out;
+  animation: neonPulse 1.2s ease-in-out infinite alternate;
+}
+
+/*   Efeito pulsante suave (animação do brilho) */
+@keyframes neonPulse {
+  0% {
+    box-shadow:
+      0 0 6px var(--btn1),
+      0 0 12px var(--btn2),
+      0 0 20px var(--btn2);
+  }
+  100% {
+    box-shadow:
+      0 0 10px var(--btn2),
+      0 0 22px var(--btn2),
+      0 0 35px var(--btn2);
+  }
+}
+
+/* Aplica a animação no hover */
+button:hover, .botao:hover {
+  animation: neonPulse 1.2s ease-in-out infinite alternate;
+}
+
+ /* 🔧 Ajuste fino da distância entre o card e a assinatura */
+.todo-container {
+  margin-bottom: 8px !important; /* 🔹 diminui espaço inferior do card */
+}
+
+footer {
+  margin-top: 0 !important;      /* 🔹 remove espaço extra acima do rodapé */
+  padding-top: 5px;              /* 🔹 pequeno respiro visual */
+}
+
+.assinatura {
+  margin-top: 5px !important;    /* 🔹 aproxima mais o texto da assinatura */
+  font-size: 14px;
+  color: black;
+}
+
+/* 📱 Corrige botões no celular */
+@media (max-width: 600px) {
+  .botao-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .botao {
+    flex: 1 1 45%;
+    min-width: 140px;
+    max-width: 180px;
+    padding: 12px;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  .todo-container {
+    margin-bottom: 6px !important;
+  }
+
+  .assinatura {
+    margin-top: 6px !important;
+  }
+}
+/* 🔽 Remove a seta padrão do campo select (prioridade) */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none !important; /* garante que não apareça seta padrão */
+  padding-right: 10px;
+}
+
+/* 🔧 Corrige o alinhamento interno do texto */
+select::-ms-expand {
+  display: none; /* remove seta no Internet Explorer */
+}
+ 
+  
+
+/* 🔧 Corrige cor do texto e do placeholder no campo de tarefa */
+#taskInput {
+  color: rgb(0, 0, 0) !important; /* cor do texto digitado */
+}
+
+#taskInput::placeholder {
+  color: rgba(0, 0, 0, 0.8); /* cor mais clara do placeholder */
+}
+
+ 
+#taskDate::placeholder  {
+  color: rgb(0, 0, 0) !important; /* cor do texto digitado */
+} 
+#searchInput::placeholder  {
+  color: rgb(0, 0, 0) !important; /* cor do texto digitado */
+}
+
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="page-wrapper">
+
+  <header>
+  <h1 class="titulo-todo">To Do List</h1>
+
+  <div id="customConfirm">
+  <div class="box">
+    <h2>Tem certeza que deseja apagar todas as tarefas?</h2>
+    <div class="actions">
+      <button id="confirmYes">Sim</button>
+      <button id="confirmNo">Cancelar</button>
+    </div>
+  </div>
+</div>
+ 
+
+  <div id="themeToggle" title="Trocar tema"></div>
+  </header>
+
+  <div class="todo-container">
+    <div class="counter" id="taskCounter">Tarefas: 0 | Concluídas: 0</div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+  
+
+    <div class="input-area">
+      <input type="text" id="taskInput" placeholder="Digite uma tarefa...">
+     <input type="text" id="taskDate" placeholder="dd/mm/aaaa" inputmode="numeric" pattern="\d{2}/\d{2}/\d{4}">
+
+      <select id="prioritySelect">
+        <option value="baixa">Nível de prioridade: Baixa</option>
+        <option value="media">Nível de prioridade: Média</option>
+        <option value="alta">Nível de prioridade: Alta</option>
+      </select>
+      <button id="addBtn">Adicionar</button>
+      <input type="text" id="searchInput" placeholder="  Buscar tarefa por nome ou data...">
+    </div>
+
+    
+    <ul id="taskList"></ul>
+    <div class="botao-container">
+  <button id="clearAll" class="botao">Limpar Tudo</button>
+  <button id="exportCSV" class="botao">Exportar PDF</button>
+    </div>
+
+
+  </div>
+
+   <footer>
+    <p class="assinatura">
+      © <span class="nome">Gabriel Borges</span>. Todos os direitos reservados. • 2025
+    </p>
+  </footer>
+
+ </div> 
+
+ 
+ 
+<script>
+const addBtn = document.getElementById("addBtn");
+const taskInput = document.getElementById("taskInput");
+// 🗓️ Permite digitar ou escolher a data manualmente (formato dd/mm/aaaa)
+taskDate.addEventListener("input", (e) => {
+  let v = e.target.value.replace(/\D/g, ""); // remove tudo que não é número
+  if (v.length >= 5) v = v.replace(/^(\d{2})(\d{2})(\d+)/, "$1/$2/$3");
+  else if (v.length >= 3) v = v.replace(/^(\d{2})(\d+)/, "$1/$2");
+  e.target.value = v.slice(0, 10); // limita a 10 caracteres (dd/mm/aaaa)
+});
+
+// 📅 Abre calendário nativo ao clicar (funciona no celular também)
+taskDate.addEventListener("focus", () => {
+  // cria input date temporário invisível
+  const picker = document.createElement("input");
+  picker.type = "date";
+  picker.style.position = "absolute";
+  picker.style.opacity = "0";
+  picker.onchange = () => {
+    const d = new Date(picker.value);
+    if (!isNaN(d)) {
+      const dia = String(d.getDate()).padStart(2, "0");
+      const mes = String(d.getMonth() + 1).padStart(2, "0");
+      const ano = d.getFullYear();
+      taskDate.value = `${dia}/${mes}/${ano}`;
+    }
+  };
+  document.body.appendChild(picker);
+  picker.click();
+  picker.remove();
+});
+
+// 🔒 Impede anos com mais de 10 dígitos no campo de data
+taskDate.addEventListener("input", () => {
+  if (taskDate.value) {
+    const partes = taskDate.value.split("-");
+    if (partes[0].length > 10) {
+      // Mantém só os 10 primeiros dígitos do ano
+      partes[0] = partes[0].slice(0,10);
+      taskDate.value = partes.join("-");
+      mostrarAlertaCentral("O ano deve ter no máximo 10 dígitos (ex: 2025)");
+    }
+  }
+});
+
+const taskList = document.getElementById("taskList");
+const clearAllBtn = document.getElementById("clearAll");
+const taskCounter = document.getElementById("taskCounter");
+const progressBar = document.getElementById("progressBar");
+const prioritySelect = document.getElementById("prioritySelect");
+const themeToggle = document.getElementById("themeToggle");
+const exportCSVBtn = document.getElementById("exportCSV");
+
+// ---- Tema claro/escuro ----
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("light");
+  localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+});
+if (localStorage.getItem("theme") === "light") document.body.classList.add("light");
+
+// ---- Salvar tarefas no localStorage ----
+function salvarLocal(tasks) {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// ---- Carregar tarefas ----
+function loadTasks() {
+  const saved = JSON.parse(localStorage.getItem("tasks")) || [];
+  taskList.innerHTML = "";
+  saved.forEach((t, i) => createTaskElement(t.text, t.completed, t.date, t.priority, i));
+  updateCounter();
+}
+
+// ---- Atualiza contador e barra de progresso ----
+function updateCounter() {
+  const total = document.querySelectorAll("#taskList li").length;
+  const completed = document.querySelectorAll("#taskList li.completed").length;
+  taskCounter.textContent = `Tarefas: ${total} | Concluídas: ${completed}`;
+  const percent = total > 0 ? (completed / total) * 100 : 0;
+  progressBar.style.width = percent + "%";
+}
+
+// ---- Cria elemento visual da tarefa ----
+function createTaskElement(text, completed = false, date = "", priority = "baixa", id = null) {
+  const li = document.createElement("li");
+  li.dataset.priority = priority;
+
+  const taskLeft = document.createElement("div");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = completed;
+
+  const span = document.createElement("span");
+  span.textContent = text;
+  span.classList.add("task-text");
+
+  const dateSpan = document.createElement("small");
+  if (date) dateSpan.textContent = " " + date;
+
+  const priorityTag = document.createElement("div");
+  priorityTag.textContent = `Prioridade: ${priority.toUpperCase()}`;
+  priorityTag.classList.add("priority", priority);
+
+  taskLeft.append(checkbox, span, dateSpan, priorityTag);
+  li.append(taskLeft);
+
+  if (completed) li.classList.add("completed");
+
+  // Marcar como concluída
+  checkbox.addEventListener("change", () => {
+    li.classList.toggle("completed", checkbox.checked);
+    salvarDoDOM();
+    updateCounter();
+  });
+
+  // 🗑️ Deletar tarefa
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "X";
+  deleteBtn.classList.add("delete-btn");
+  deleteBtn.addEventListener("click", () => {
+    li.remove();
+    salvarDoDOM();
+    updateCounter();
+  });
+
+  li.append(deleteBtn);
+  taskList.append(li);
+  updateCounter();
+}
+
+// ---- Salvar todas as tarefas que estão na tela ----
+function salvarDoDOM() {
+  const tasks = [];
+  document.querySelectorAll("#taskList li").forEach(li => {
+    const text = li.querySelector(".task-text").textContent;
+    const date = li.querySelector("small")?.textContent.trim() || "";
+    const priority = li.dataset.priority;
+    tasks.push({ text, completed: li.classList.contains("completed"), date, priority });
+  });
+  salvarLocal(tasks);
+}
+
+// ---- Adicionar nova tarefa ----
+function addTask() {
+  const text = taskInput.value.trim();
+  const date = taskDate.value;
+  const priority = prioritySelect.value;
+  if (text === "") return;
+
+  createTaskElement(text, false, date, priority);
+  salvarDoDOM();
+
+  taskInput.value = "";
+  taskDate.value = "";
+}
+
+// ---- Eventos ----
+addBtn.addEventListener("click", addTask);
+taskInput.addEventListener("keypress", e => { if (e.key === "Enter") addTask(); });
+
+// ---- Limpar todas as tarefas ----
+const customConfirm = document.getElementById("customConfirm");
+const confirmYes = document.getElementById("confirmYes");
+const confirmNo = document.getElementById("confirmNo");
+
+clearAllBtn.addEventListener("click", () => {
+  customConfirm.style.display = "flex";
+});
+
+confirmYes.addEventListener("click", () => {
+  taskList.innerHTML = "";
+  localStorage.removeItem("tasks");
+  updateCounter();
+  customConfirm.style.display = "none";
+});
+
+confirmNo.addEventListener("click", () => {
+  customConfirm.style.display = "none";
+});
+
+// ---- Exportar PDF ----
+exportCSVBtn.addEventListener("click", () => {
+  const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  if (savedTasks.length === 0) {
+    mostrarAlertaCentral("Nenhuma tarefa para exportar!");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.text("Tarefas - To Do List", 14, 20);
+  doc.setFontSize(12);
+  doc.text(`Exportado em: ${new Date().toLocaleDateString("pt-BR")}`, 14, 30);
+
+  let y = 40;
+
+  savedTasks.forEach((t, i) => {
+    doc.setFont("helvetica", "bold");
+    doc.text(`${i + 1}. ${t.text}`, 14, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Status: ${t.completed ? "✅ Concluída" : "Pendente"}`, 14, y + 6);
+    if (t.date) doc.text(`Data: ${t.date}`, 14, y + 12);
+    doc.text(`Prioridade: ${t.priority.toUpperCase()}`, 14, y + 18);
+    y += 28;
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+  });
+
+  doc.save("tarefas.pdf");
+});
+
+// ---- Alerta central ----
+function mostrarAlertaCentral(mensagem) {
+  const alerta = document.createElement("div");
+  alerta.id = "alertaCentral";
+  alerta.textContent = mensagem;
+  document.body.appendChild(alerta);
+
+  setTimeout(() => {
+    alerta.remove();
+  }, 2500);
+}
+
+const searchInput = document.getElementById("searchInput");
+
+// 🔍 Filtrar tarefas por nome ou data
+searchInput.addEventListener("input", () => {
+  const termo = searchInput.value.toLowerCase().trim();
+  const tarefas = document.querySelectorAll("#taskList li");
+
+  tarefas.forEach(li => {
+    const texto = li.querySelector(".task-text")?.textContent.toLowerCase() || "";
+    const data = li.querySelector("small")?.textContent.toLowerCase() || "";
+
+    // Se o termo está incluso no texto OU na data → mostra; senão, esconde
+    if (texto.includes(termo) || data.includes(termo)) {
+      li.style.display = "";
+    } else {
+      li.style.display = "none";
+    }
+  });
+});
+
+
+
+// ---- Carregar tarefas ao iniciar ----
+window.addEventListener("load", loadTasks);
+ 
+
+
+
+</script>
+</body>
+</html>
