@@ -742,7 +742,16 @@ select::-ms-expand {
 #searchInput::placeholder  {
   color: rgb(0, 0, 0) !important; /* cor do texto digitado */
 }
+li {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
 
+li.show {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1100,7 +1109,7 @@ searchInput.addEventListener("input", () => {
 // ---- Carregar tarefas ao iniciar ----
 window.addEventListener("load", loadTasks);
  
-
+setInterval(loadTasks, 5000);
 
 
 </script>
