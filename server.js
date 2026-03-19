@@ -63,4 +63,10 @@ app.delete('/tasks', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+app.listen(PORT, () => {
+  console.log("Servidor rodando na porta", PORT);
+});
+
+const cors = require("cors");
+app.use(cors());
